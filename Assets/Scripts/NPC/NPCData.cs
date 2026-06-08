@@ -19,6 +19,8 @@ public class NPCData : MonoBehaviour
 
     private void Start()
     {
+        SaveManager.LoadNPC(this);
+
         Debug.Log(
             npcName +
             " | Personality: " +

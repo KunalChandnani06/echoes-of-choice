@@ -95,10 +95,14 @@ public class InteractionManager : MonoBehaviour
 
         npc.conversationStage++;
 
+        SaveManager.SaveNPC(npc);
+
         Debug.Log(
             npc.npcName +
             " Stage = " +
-            npc.conversationStage
+            npc.conversationStage +
+            " | Friendship = " +
+            npc.friendship
         );
 
         string sign = friendshipChange >= 0 ? "+" : "";
