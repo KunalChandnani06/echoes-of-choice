@@ -37,81 +37,80 @@ public class InteractionManager : MonoBehaviour
 
     void OpenDialogue()
     {
+        if (NPCInteraction.currentNPC == null)
+            return;
+
         isOpen = true;
 
         dialoguePanel.SetActive(true);
 
         PlayerMovement.canMove = false;
 
-        if (!NPCMemory.metAlex)
-        {
-            dialogueText.text =
-                "Alex:\nHey, nice to meet you.\n\n" +
-                "1 - Nice to meet you too.\n" +
-                "2 - Ignore Alex.\n" +
-                "3 - Tell a joke.";
-        }
-        else
-        {
-            string relationship =
-    RelationshipManager.GetRelationshipLevel(
-        FriendshipManager.friendship
-    );
+        NPCData npc = NPCInteraction.currentNPC;
 
-            if (relationship == "Dislikes You")
-            {
-                dialogueText.text =
-                    "Alex:\nI'd rather be alone right now.";
-            }
-            else if (relationship == "Acquaintance")
-            {
-                dialogueText.text =
-                    "Alex:\nGood to see you again.\n" +
-                    "Relationship: Acquaintance";
-            }
-            else if (relationship == "Friend")
-            {
-                dialogueText.text =
-                    "Alex:\nHey friend! Nice seeing you.\n" +
-                    "Relationship: Friend";
-            }
-            else
-            {
-                dialogueText.text =
-                    "Alex:\nI've been waiting for you!\n" +
-                    "Relationship: Close Friend";
-            }
-        }
+        dialogueText.text =
+            NPCDialogueDatabase.GetStageDialogue(npc);
     }
 
     void HandleChoices()
     {
+        if (NPCInteraction.currentNPC == null)
+            return;
+
+        NPCData npc = NPCInteraction.currentNPC;
+
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            NPCMemory.metAlex = true;
-            FriendshipManager.friendship += 5;
-
-            dialogueText.text =
-                "Alex:\nGlad to hear that!\n\nFriendship +5";
+            ApplyChoice(npc, 1);
         }
 
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            NPCMemory.metAlex = true;
-            FriendshipManager.friendship -= 5;
-
-            dialogueText.text =
-                "Alex:\nOh... okay.\n\nFriendship -5";
+            ApplyChoice(npc, 2);
         }
 
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {
-            NPCMemory.metAlex = true;
-            FriendshipManager.friendship += 2;
-
-            dialogueText.text =
-                "Alex:\nHaha, that's funny.\n\nFriendship +2";
+            ApplyChoice(npc, 3);
         }
+    }
+
+    void ApplyChoice(NPCData npc, int choice)
+    {
+        if (npc.conversationStage >= 4)
+        {
+            dialogueText.text =
+                npc.npcName +
+                ":\nWe've talked about everything for now.";
+            return;
+        }
+
+        int friendshipChange =
+            NPCDialogueDatabase.GetFriendshipChange(choice);
+
+        npc.friendship += friendshipChange;
+
+        npc.metPlayer = true;
+        npc.choiceMade = true;
+
+        npc.conversationStage++;
+
+        Debug.Log(
+            npc.npcName +
+            " Stage = " +
+            npc.conversationStage
+        );
+
+        string sign = friendshipChange >= 0 ? "+" : "";
+
+        dialogueText.text =
+            npc.npcName +
+            ":\nConversation Complete!\n\n" +
+            "Friendship " +
+            sign +
+            friendshipChange +
+            "\nStage " +
+            npc.conversationStage;
     }
 
     public void CloseDialogue()
