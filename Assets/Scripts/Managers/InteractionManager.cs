@@ -53,20 +53,33 @@ public class InteractionManager : MonoBehaviour
         }
         else
         {
-            if (NPCMemory.alexStage == 1)
+            string relationship =
+    RelationshipManager.GetRelationshipLevel(
+        FriendshipManager.friendship
+    );
+
+            if (relationship == "Dislikes You")
             {
                 dialogueText.text =
-                    "Alex:\nGood to see you again.\nHow has your day been?";
+                    "Alex:\nI'd rather be alone right now.";
             }
-            else if (NPCMemory.alexStage == 2)
+            else if (relationship == "Acquaintance")
             {
                 dialogueText.text =
-                    "Alex:\nHey friend! Nice seeing you again.";
+                    "Alex:\nGood to see you again.\n" +
+                    "Relationship: Acquaintance";
             }
-            else if (NPCMemory.alexStage >= 3)
+            else if (relationship == "Friend")
             {
                 dialogueText.text =
-                    "Alex:\nI've been waiting for you!";
+                    "Alex:\nHey friend! Nice seeing you.\n" +
+                    "Relationship: Friend";
+            }
+            else
+            {
+                dialogueText.text =
+                    "Alex:\nI've been waiting for you!\n" +
+                    "Relationship: Close Friend";
             }
         }
     }
@@ -76,7 +89,6 @@ public class InteractionManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             NPCMemory.metAlex = true;
-            NPCMemory.alexStage = 1;
             FriendshipManager.friendship += 5;
 
             dialogueText.text =
@@ -86,7 +98,6 @@ public class InteractionManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             NPCMemory.metAlex = true;
-            NPCMemory.alexStage = 1;
             FriendshipManager.friendship -= 5;
 
             dialogueText.text =
@@ -96,7 +107,6 @@ public class InteractionManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {
             NPCMemory.metAlex = true;
-            NPCMemory.alexStage = 1;
             FriendshipManager.friendship += 2;
 
             dialogueText.text =
