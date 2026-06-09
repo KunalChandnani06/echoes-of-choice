@@ -48,6 +48,18 @@ public class InteractionManager : MonoBehaviour
 
         NPCData npc = NPCInteraction.currentNPC;
 
+        // Quest ready to turn in
+        if (npc.quest.isAccepted &&
+            !npc.quest.isCompleted &&
+            InventoryManager.Instance.HasItem("Notebook"))
+        {
+            dialogueText.text =
+                npc.npcName +
+                ":\nYou found my notebook!\n\n" +
+                "1 - Return Notebook";
+            return;
+        }
+
         dialogueText.text =
             NPCDialogueDatabase.GetStageDialogue(npc);
     }
@@ -59,7 +71,6 @@ public class InteractionManager : MonoBehaviour
 
         NPCData npc = NPCInteraction.currentNPC;
 
-        // Quest dialogue after Stage 4
         if (npc.conversationStage >= 4)
         {
             HandleQuestChoices(npc);
@@ -87,7 +98,26 @@ public class InteractionManager : MonoBehaviour
         if (npc.quest.isCompleted)
             return;
 
-        // Accept Quest
+        // Turn in notebook
+        if (npc.quest.isAccepted &&
+            !npc.quest.isCompleted &&
+            InventoryManager.Instance.HasItem("Notebook") &&
+            Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            InventoryManager.Instance.RemoveItem("Notebook");
+
+            QuestManager.Instance.CompleteQuest(npc);
+
+            dialogueText.text =
+                npc.npcName +
+                ":\nThank you for finding it!\n\n" +
+                "Friendship +" +
+                npc.quest.friendshipReward;
+
+            return;
+        }
+
+        // Accept quest
         if (!npc.quest.isAccepted &&
             Input.GetKeyDown(KeyCode.Alpha1))
         {
@@ -100,27 +130,13 @@ public class InteractionManager : MonoBehaviour
                 npc.quest.questName;
         }
 
-        // Decline Quest
+        // Decline quest
         if (!npc.quest.isAccepted &&
             Input.GetKeyDown(KeyCode.Alpha2))
         {
             dialogueText.text =
                 npc.npcName +
                 ":\nAlright. Let me know later.";
-        }
-
-        // TEMPORARY QUEST COMPLETE KEY
-        if (npc.quest.isAccepted &&
-            !npc.quest.isCompleted &&
-            Input.GetKeyDown(KeyCode.Q))
-        {
-            QuestManager.Instance.CompleteQuest(npc);
-
-            dialogueText.text =
-                npc.npcName +
-                ":\nYou found it!\n\n" +
-                "Friendship +" +
-                npc.quest.friendshipReward;
         }
     }
 

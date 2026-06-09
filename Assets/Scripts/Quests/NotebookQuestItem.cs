@@ -6,23 +6,43 @@ public class NotebookQuestItem : MonoBehaviour
 
     private void Update()
     {
-        if (playerNearby && Input.GetKeyDown(KeyCode.E))
+        if (!playerNearby)
+            return;
+
+        if (Input.GetKeyDown(KeyCode.E))
         {
-            NPCData[] npcs = FindObjectsOfType<NPCData>();
+            NPCData[] npcs =
+                FindObjectsByType<NPCData>(
+                    FindObjectsSortMode.None
+                );
+
+            bool questAccepted = false;
 
             foreach (NPCData npc in npcs)
             {
                 if (npc.quest.isAccepted &&
                     !npc.quest.isCompleted)
                 {
-                    QuestManager.Instance.CompleteQuest(npc);
-
-                    Debug.Log(
-                        "Notebook returned to " +
-                        npc.npcName
-                    );
+                    questAccepted = true;
+                    break;
                 }
             }
+
+            if (!questAccepted)
+            {
+                Debug.Log(
+                    "Alex hasn't asked you to find this yet."
+                );
+                return;
+            }
+
+            InventoryManager.Instance.AddItem(
+                "Notebook"
+            );
+
+            Debug.Log(
+                "Notebook collected"
+            );
 
             Destroy(gameObject);
         }
@@ -35,7 +55,7 @@ public class NotebookQuestItem : MonoBehaviour
             playerNearby = true;
 
             Debug.Log(
-                "Press E to pick up notebook"
+                "Press E to collect Notebook"
             );
         }
     }
