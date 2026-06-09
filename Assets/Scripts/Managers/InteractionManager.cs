@@ -59,6 +59,13 @@ public class InteractionManager : MonoBehaviour
 
         NPCData npc = NPCInteraction.currentNPC;
 
+        // Quest dialogue after Stage 4
+        if (npc.conversationStage >= 4)
+        {
+            HandleQuestChoices(npc);
+            return;
+        }
+
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             ApplyChoice(npc, 1);
@@ -75,16 +82,50 @@ public class InteractionManager : MonoBehaviour
         }
     }
 
-    void ApplyChoice(NPCData npc, int choice)
+    void HandleQuestChoices(NPCData npc)
     {
-        if (npc.conversationStage >= 4)
+        if (npc.quest.isCompleted)
+            return;
+
+        // Accept Quest
+        if (!npc.quest.isAccepted &&
+            Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            QuestManager.Instance.AcceptQuest(npc);
+
+            dialogueText.text =
+                npc.npcName +
+                ":\nThank you!\n\n" +
+                "Quest Accepted:\n" +
+                npc.quest.questName;
+        }
+
+        // Decline Quest
+        if (!npc.quest.isAccepted &&
+            Input.GetKeyDown(KeyCode.Alpha2))
         {
             dialogueText.text =
                 npc.npcName +
-                ":\nWe've talked about everything for now.";
-            return;
+                ":\nAlright. Let me know later.";
         }
 
+        // TEMPORARY QUEST COMPLETE KEY
+        if (npc.quest.isAccepted &&
+            !npc.quest.isCompleted &&
+            Input.GetKeyDown(KeyCode.Q))
+        {
+            QuestManager.Instance.CompleteQuest(npc);
+
+            dialogueText.text =
+                npc.npcName +
+                ":\nYou found it!\n\n" +
+                "Friendship +" +
+                npc.quest.friendshipReward;
+        }
+    }
+
+    void ApplyChoice(NPCData npc, int choice)
+    {
         int friendshipChange =
             NPCDialogueDatabase.GetFriendshipChange(choice);
 

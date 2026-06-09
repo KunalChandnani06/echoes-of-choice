@@ -37,8 +37,24 @@ public static class NPCDialogueDatabase
                            "3 - Interrupt";
 
                 default:
+
+                    if (!npc.quest.isAccepted)
+                    {
+                        return npc.npcName +
+                               ":\nMy best friend is here!\n\n" +
+                               "I lost my notebook.\n\n" +
+                               "1 - I'll help you find it.\n" +
+                               "2 - Maybe later.";
+                    }
+
+                    if (!npc.quest.isCompleted)
+                    {
+                        return npc.npcName +
+                               ":\nHave you found my notebook yet?";
+                    }
+
                     return npc.npcName +
-                           ":\nMy best friend is here!";
+                           ":\nThank you for finding my notebook!";
             }
         }
 

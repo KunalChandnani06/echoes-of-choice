@@ -17,6 +17,9 @@ public class NPCData : MonoBehaviour
     [Header("Conversation Progress")]
     public int conversationStage = 0;
 
+    [Header("Quest")]
+    public QuestData quest = new QuestData();
+
     private void Start()
     {
         SaveManager.LoadNPC(this);
