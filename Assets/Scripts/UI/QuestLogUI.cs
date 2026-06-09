@@ -4,16 +4,28 @@ using System.Text;
 
 public class QuestLogUI : MonoBehaviour
 {
+    public static QuestLogUI Instance;
+
     public GameObject questLogPanel;
     public TMP_Text questLogText;
 
     private bool isOpen = false;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.J))
         {
             ToggleQuestLog();
+        }
+
+        if (isOpen)
+        {
+            RefreshQuestLog();
         }
     }
 
@@ -29,7 +41,7 @@ public class QuestLogUI : MonoBehaviour
         }
     }
 
-    void RefreshQuestLog()
+    public void RefreshQuestLog()
     {
         StringBuilder builder =
             new StringBuilder();

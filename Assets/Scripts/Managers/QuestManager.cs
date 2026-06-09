@@ -13,6 +13,11 @@ public class QuestManager : MonoBehaviour
     {
         npc.quest.isAccepted = true;
 
+        NotificationManager.Instance.ShowNotification(
+            "Quest Accepted:\n" +
+            npc.quest.questName
+        );
+
         Debug.Log(
             "Quest Accepted: " +
             npc.quest.questName
@@ -32,6 +37,13 @@ public class QuestManager : MonoBehaviour
         npc.friendship += npc.quest.friendshipReward;
 
         SaveManager.SaveNPC(npc);
+
+        NotificationManager.Instance.ShowNotification(
+            "Quest Completed!\n" +
+            npc.quest.questName +
+            "\nFriendship +" +
+            npc.quest.friendshipReward
+        );
 
         Debug.Log(
             "Quest Completed: " +

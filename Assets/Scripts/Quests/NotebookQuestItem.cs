@@ -30,14 +30,19 @@ public class NotebookQuestItem : MonoBehaviour
 
             if (!questAccepted)
             {
-                Debug.Log(
-                    "Alex hasn't asked you to find this yet."
+                NotificationManager.Instance.ShowNotification(
+                    "You don't need this yet."
                 );
+
                 return;
             }
 
             InventoryManager.Instance.AddItem(
                 "Notebook"
+            );
+
+            NotificationManager.Instance.ShowNotification(
+                "Notebook Added"
             );
 
             Debug.Log(
@@ -53,10 +58,6 @@ public class NotebookQuestItem : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerNearby = true;
-
-            Debug.Log(
-                "Press E to collect Notebook"
-            );
         }
     }
 

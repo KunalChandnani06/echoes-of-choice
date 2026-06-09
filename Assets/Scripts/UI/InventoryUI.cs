@@ -4,17 +4,28 @@ using System.Text;
 
 public class InventoryUI : MonoBehaviour
 {
-    public GameObject inventoryPanel;
+    public static InventoryUI Instance;
 
+    public GameObject inventoryPanel;
     public TMP_Text inventoryText;
 
     private bool isOpen = false;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.I))
         {
             ToggleInventory();
+        }
+
+        if (isOpen)
+        {
+            RefreshInventory();
         }
     }
 
@@ -30,7 +41,7 @@ public class InventoryUI : MonoBehaviour
         }
     }
 
-    void RefreshInventory()
+    public void RefreshInventory()
     {
         StringBuilder builder =
             new StringBuilder();
