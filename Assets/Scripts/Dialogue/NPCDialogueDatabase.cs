@@ -91,11 +91,78 @@ public static class NPCDialogueDatabase
                            "3 - Judge her";
 
                 default:
+
+                    if (!npc.quest.isAccepted)
+                    {
+                        return npc.npcName +
+                               ":\nI was hoping you'd stop by.\n\n" +
+                               "I lost my flower.\n\n" +
+                               "1 - I'll help you find it.\n" +
+                               "2 - Maybe later.";
+                    }
+
+                    if (!npc.quest.isCompleted)
+                    {
+                        return npc.npcName +
+                               ":\nHave you found my flower yet?";
+                    }
+
                     return npc.npcName +
-                           ":\nI was hoping you'd stop by.";
+                           ":\nThank you for finding my flower!";
             }
         }
+        if (npc.personalityType == "Shy")
+        {
+            switch (npc.conversationStage)
+            {
+                case 0:
+                    return npc.npcName +
+                           ":\nOh... hello.\n\n" +
+                           "1 - Be friendly\n" +
+                           "2 - Stay quiet\n" +
+                           "3 - Walk away";
 
+                case 1:
+                    return npc.npcName +
+                           ":\nI don't talk to many people.\n\n" +
+                           "1 - Encourage her\n" +
+                           "2 - Change topic\n" +
+                           "3 - Ignore";
+
+                case 2:
+                    return npc.npcName +
+                           ":\nYou're easier to talk to.\n\n" +
+                           "1 - Be supportive\n" +
+                           "2 - Stay neutral\n" +
+                           "3 - Tease";
+
+                case 3:
+                    return npc.npcName +
+                           ":\nCan I ask a favor?\n\n" +
+                           "1 - Sure\n" +
+                           "2 - Maybe later\n" +
+                           "3 - Refuse";
+
+                default:
+
+                    if (!npc.quest.isAccepted)
+                    {
+                        return npc.npcName +
+                               ":\nI lost an old photo.\n\n" +
+                               "1 - I'll help find it.\n" +
+                               "2 - Maybe later.";
+                    }
+
+                    if (!npc.quest.isCompleted)
+                    {
+                        return npc.npcName +
+                               ":\nHave you found my photo?";
+                    }
+
+                    return npc.npcName +
+                           ":\nThank you for finding it.";
+            }
+        }
         return npc.npcName + ":\n...";
     }
 

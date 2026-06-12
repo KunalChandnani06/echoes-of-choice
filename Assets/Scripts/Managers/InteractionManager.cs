@@ -48,15 +48,21 @@ public class InteractionManager : MonoBehaviour
 
         NPCData npc = NPCInteraction.currentNPC;
 
-        // Quest ready to turn in
+        string requiredItem =
+            GetQuestItemName(npc);
+
         if (npc.quest.isAccepted &&
             !npc.quest.isCompleted &&
-            InventoryManager.Instance.HasItem("Notebook"))
+            InventoryManager.Instance.HasItem(requiredItem))
         {
             dialogueText.text =
                 npc.npcName +
-                ":\nYou found my notebook!\n\n" +
-                "1 - Return Notebook";
+                ":\nYou found my " +
+                requiredItem +
+                "!\n\n" +
+                "1 - Return " +
+                requiredItem;
+
             return;
         }
 
@@ -98,26 +104,31 @@ public class InteractionManager : MonoBehaviour
         if (npc.quest.isCompleted)
             return;
 
-        // Turn in notebook
+        string requiredItem =
+            GetQuestItemName(npc);
+
         if (npc.quest.isAccepted &&
             !npc.quest.isCompleted &&
-            InventoryManager.Instance.HasItem("Notebook") &&
+            InventoryManager.Instance.HasItem(requiredItem) &&
             Input.GetKeyDown(KeyCode.Alpha1))
         {
-            InventoryManager.Instance.RemoveItem("Notebook");
+            InventoryManager.Instance.RemoveItem(
+                requiredItem
+            );
 
             QuestManager.Instance.CompleteQuest(npc);
 
             dialogueText.text =
                 npc.npcName +
-                ":\nThank you for finding it!\n\n" +
+                ":\nThank you for finding my " +
+                requiredItem +
+                "!\n\n" +
                 "Friendship +" +
                 npc.quest.friendshipReward;
 
             return;
         }
 
-        // Accept quest
         if (!npc.quest.isAccepted &&
             Input.GetKeyDown(KeyCode.Alpha1))
         {
@@ -130,7 +141,6 @@ public class InteractionManager : MonoBehaviour
                 npc.quest.questName;
         }
 
-        // Decline quest
         if (!npc.quest.isAccepted &&
             Input.GetKeyDown(KeyCode.Alpha2))
         {
@@ -138,6 +148,20 @@ public class InteractionManager : MonoBehaviour
                 npc.npcName +
                 ":\nAlright. Let me know later.";
         }
+    }
+
+    string GetQuestItemName(NPCData npc)
+    {
+        if (npc.npcName == "Alex")
+            return "Notebook";
+
+        if (npc.npcName == "Maya")
+            return "Flower";
+
+        if (npc.npcName == "Emma")
+            return "Photo";
+
+        return "";
     }
 
     void ApplyChoice(NPCData npc, int choice)
